@@ -12,13 +12,7 @@ public class TCPChannelHandler extends SimpleChannelInboundHandler<String> {
 
         if ("Hello".equalsIgnoreCase(trimMsg)) { 
             ctx.channel().writeAndFlush("Wassup boy..\n");
-        } else if ("Dc".equalsIgnoreCase(trimMsg)) { 
-            ctx.channel().writeAndFlush("Goodbye!\n").addListener(future -> {
-                if (future.isSuccess()) {
-                    ctx.channel().close(); 
-                }
-            });
-        }
+        } 
     }
 
     @Override
@@ -36,8 +30,6 @@ public class TCPChannelHandler extends SimpleChannelInboundHandler<String> {
         // Log the exception
         System.err.println("Exception caught: " + cause.getMessage());
         cause.printStackTrace();
-
-        // Close the connection on exception
         ctx.close();
     }
 }
