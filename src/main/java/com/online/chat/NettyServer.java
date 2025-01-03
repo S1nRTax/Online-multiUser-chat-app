@@ -9,8 +9,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import com.online.handlers.*;
 
+import java.util.Scanner;
+
+import com.online.handlers.*;
+import com.online.commands.*;
 
 
 public class NettyServer {
@@ -36,6 +39,20 @@ public class NettyServer {
 
             ChannelFuture future = bootstrap.bind(port).sync();
             System.out.println("Server started on port: "+ port);
+            
+            new Thread(()-> {
+            	Scanner scanner = new Scanner(System.in);
+            	while(true) {
+            		String command = scanner.nextLine();
+            		if("stop".equalsIgnoreCase(command)) {
+            			ServerCommands.shutdownServer(bossGroup,workerGroup);
+            			break;
+            		}
+            		scanner.close();
+            	}
+            }).start();
+            
+            
             future.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
